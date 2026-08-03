@@ -33,20 +33,7 @@ export default function Contact() {
 
         <div className="flex flex-col items-center text-center max-w-2xl mx-auto mt-8">
           <SectionReveal>
-            <p className="text-lg md:text-xl text-secondary leading-relaxed mb-8 max-w-md">
-              Have a project in mind? Let&apos;s talk about how we can work
-              together to create something extraordinary.
-            </p>
 
-            <MagneticButton className="mb-10">
-              <a
-                href={`mailto:${PERSONAL.email}`}
-                className="magnetic-btn inline-flex items-center gap-3 px-10 py-5 rounded-full bg-foreground text-background text-lg font-bold hover:text-foreground transition-colors duration-500"
-              >
-                <Mail size={20} />
-                Say Hello
-              </a>
-            </MagneticButton>
 
             {/* Social Links */}
             <div className="flex items-center justify-center gap-6">
