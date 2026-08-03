@@ -72,6 +72,7 @@ export default function Navbar() {
     setIsOpen(false);
     const el = document.querySelector(href);
     if (el) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const lenis = (window as any).__lenis;
       if (lenis) {
         lenis.scrollTo(el);
@@ -101,6 +102,7 @@ export default function Navbar() {
             className="text-lg font-extrabold tracking-tighter whitespace-nowrap"
             onClick={(e) => {
               e.preventDefault();
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const lenis = (window as any).__lenis;
               if (lenis) {
                 lenis.scrollTo(0);

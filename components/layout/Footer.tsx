@@ -11,6 +11,7 @@ export default function Footer() {
     e.preventDefault();
     const el = document.querySelector(href);
     if (el) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const lenis = (window as any).__lenis;
       if (lenis) {
         lenis.scrollTo(el);
@@ -21,6 +22,7 @@ export default function Footer() {
   };
 
   const handleScrollTop = () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const lenis = (window as any).__lenis;
     if (lenis) {
       lenis.scrollTo(0);
