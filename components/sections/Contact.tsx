@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
-import gsap from "gsap";
+
 import SectionReveal from "@/components/animations/SectionReveal";
 import MagneticButton from "@/components/animations/MagneticButton";
 import { PERSONAL } from "@/lib/data";
