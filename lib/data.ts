@@ -17,7 +17,7 @@ export const PERSONAL = {
 export const ABOUT = {
   description: [
     "I'm a passionate AI Engineer and Full Stack Developer who thrives at the intersection of artificial intelligence and modern web development.",
-    "With expertise spanning from deep learning models to production-grade web applications, I create intelligent digital experiences that push the boundaries of what's possible.",
+    "With expertise spanning from deep learning models to production grade web applications, I create intelligent digital experiences that push the boundaries of what's possible.",
     "I believe in writing clean, performant code and building products that make a real impact. Currently focused on building AI-powered solutions and scalable full-stack applications.",
   ],
   stats: [
