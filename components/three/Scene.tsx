@@ -30,7 +30,7 @@ function FloatingGeometry() {
 
   return (
     <Float speed={2} rotationIntensity={0.3} floatIntensity={0.8}>
-      <mesh ref={meshRef} scale={1.8}>
+      <mesh ref={meshRef} scale={2.4}>
         <torusKnotGeometry args={[1, 0.3, 128, 16]} />
         <MeshDistortMaterial
           color="#D9FF3F"
