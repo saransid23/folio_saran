@@ -20,7 +20,7 @@ export default function Contact() {
             <span className="section-label justify-center">Get in Touch</span>
             <h2
               className="font-extrabold tracking-tighter leading-[0.9] mt-6"
-              style={{ fontSize: "clamp(3rem, 8vw, 8rem)" }}
+              style={{ fontSize: "clamp(2.5rem, 6.5vw, 6rem)" }}
             >
               LET&apos;S BUILD
               <br />
