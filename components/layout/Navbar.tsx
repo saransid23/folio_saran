@@ -13,6 +13,7 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
     const nav = navRef.current;
@@ -35,7 +36,30 @@ export default function Navbar() {
       { y: 0, opacity: 1, duration: 1, delay: 3.5, ease: "expo.out" }
     );
 
+    // Active Section Observer
+    const sections = NAV_LINKS.map((link) => document.querySelector(link.href));
+    const observerOptions = {
+      root: null,
+      rootMargin: "-30% 0px -50% 0px", // Triggers when section occupies middle/upper viewport
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.target.id) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach((section) => {
+      if (section) observer.observe(section);
+    });
+
     return () => {
+      sections.forEach((section) => {
+        if (section) observer.unobserve(section);
+      });
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
@@ -86,26 +110,35 @@ export default function Navbar() {
 
           {/* Desktop Links */}
           <div className="hidden lg:flex items-center gap-6">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(link.href);
-                }}
-                className="text-sm font-medium text-secondary hover:text-foreground transition-colors duration-300 whitespace-nowrap"
-              >
-                {link.label}
-              </a>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive = activeSection === link.href.substring(1);
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(link.href);
+                  }}
+                  className={cn(
+                    "text-sm font-medium transition-all duration-300 whitespace-nowrap",
+                    isActive
+                      ? "text-accent font-bold scale-105"
+                      : "text-secondary hover:text-foreground"
+                  )}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
           </div>
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <a
               href={PERSONAL.resumeUrl}
-              download
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-full border border-border hover:border-foreground transition-colors duration-300"
             >
               <Download size={14} />
@@ -145,29 +178,36 @@ export default function Navbar() {
         )}
       >
         <div className="flex flex-col items-center gap-8">
-          {NAV_LINKS.map((link, i) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick(link.href);
-              }}
-              className="text-4xl font-extrabold tracking-tight hover:text-accent transition-colors"
-              style={{
-                transitionDelay: isOpen ? `${i * 50}ms` : "0ms",
-                transform: isOpen ? "translateY(0)" : "translateY(20px)",
-                opacity: isOpen ? 1 : 0,
-                transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-              }}
-            >
-              {link.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((link, i) => {
+            const isActive = activeSection === link.href.substring(1);
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(link.href);
+                }}
+                className={cn(
+                  "text-4xl font-extrabold tracking-tight transition-colors",
+                  isActive ? "text-accent" : "hover:text-accent"
+                )}
+                style={{
+                  transitionDelay: isOpen ? `${i * 50}ms` : "0ms",
+                  transform: isOpen ? "translateY(0)" : "translateY(20px)",
+                  opacity: isOpen ? 1 : 0,
+                  transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              >
+                {link.label}
+              </a>
+            );
+          })}
           <div className="flex items-center gap-4 mt-8">
             <a
               href={PERSONAL.resumeUrl}
-              download
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 text-lg font-medium px-6 py-3 rounded-full border border-border"
             >
               <Download size={18} />
