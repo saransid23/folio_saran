@@ -28,6 +28,9 @@ export default function Contact() {
               <br />
               <span className="text-accent">AMAZING</span>
             </h2>
+            <p className="text-lg md:text-xl text-secondary leading-relaxed mt-6 max-w-xl mx-auto">
+              Let&apos;s talk about how we can work together to create something extraordinary.
+            </p>
           </div>
         </SectionReveal>
 
