@@ -36,30 +36,34 @@ export default function Navbar() {
       { y: 0, opacity: 1, duration: 1, delay: 3.5, ease: "expo.out" }
     );
 
-    // Active Section Observer
-    const sections = NAV_LINKS.map((link) => document.querySelector(link.href));
-    const observerOptions = {
-      root: null,
-      rootMargin: "-30% 0px -50% 0px", // Triggers when section occupies middle/upper viewport
-      threshold: 0.1,
+    // Active Section Scroll Listener (highly robust offset-top comparison)
+    const handleScrollActive = () => {
+      const scrollPos = window.scrollY + 250; // offset for middle-upper screen trigger
+      let current = "";
+
+      for (const link of NAV_LINKS) {
+        const el = document.querySelector(link.href) as HTMLElement;
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            current = link.href.substring(1);
+          }
+        }
+      }
+
+      if (window.scrollY < 150) {
+        current = ""; // Clear active state near top
+      }
+
+      setActiveSection(current);
     };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.target.id) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    }, observerOptions);
-
-    sections.forEach((section) => {
-      if (section) observer.observe(section);
-    });
+    window.addEventListener("scroll", handleScrollActive);
+    handleScrollActive();
 
     return () => {
-      sections.forEach((section) => {
-        if (section) observer.unobserve(section);
-      });
+      window.removeEventListener("scroll", handleScrollActive);
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
