@@ -1,4 +1,4 @@
-# Saran Siddarth  Developer Portfolio
+# Saran Siddarth -- Developer Portfolio
 
 A modern, high-performance portfolio website built with Next.js, TypeScript, Tailwind CSS, and GSAP interactive animations.
 
