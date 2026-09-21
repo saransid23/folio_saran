@@ -1,46 +1,53 @@
-# Saran Siddarth -- Developer Portfolio
+# Hi, I'm Saran Siddarth 👋
 
-A modern, high-performance portfolio website built with Next.js, TypeScript, Tailwind CSS, and GSAP interactive animations.
+**AI Engineer & Full Stack Developer** based in Coimbatore, India.
 
-🌐 **Live Demo:** [https://saransid23.vercel.app](https://saransid23.vercel.app)
+I build intelligent applications at the intersection of artificial intelligence and modern web development, from deep learning models to production-ready web apps.
 
----
-
-## 🛠️ Tech Stack
-
-- **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
-- **Animations:** [GSAP](https://greensock.com/gsap/) (ScrollTrigger, MotionPath), Lenis Smooth Scroll
-- **Deployment:** [Vercel](https://vercel.com/)
+🌐 **Portfolio:** [saransid23.vercel.app](https://saransid23.vercel.app)
 
 ---
 
-## 🚀 Quick Start
+## 🛠️ Tech I Know
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/saransid23/folio_saran.git
-cd folio_saran
-```
-
-### 2. Install dependencies
-```bash
-npm install
-```
-
-### 3. Run development server
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application locally.
+| Area | Technologies |
+| --- | --- |
+| **Languages** | Python, Java, SQL |
+| **Frontend** | React, Next.js |
+| **Backend** | Node.js, Express, FastAPI, Flask |
+| **Databases** | MongoDB, SQL |
+| **AI / ML** | TensorFlow, Scikit-learn, YOLOv5, OpenCV, Sentence Transformers, FAISS |
+| **Data Science** | NumPy, Pandas |
+| **Tools & DevOps** | Git, Docker, Socket.IO |
 
 ---
 
-## 📦 Build for Production
+## 🚀 Projects
 
-```bash
-npm run build
-npm run start
-```
+### 1. ImportSense AI: AI Import Compliance Platform
+An intelligent multi-agent platform that uses sentence transformers, FAISS vector search, and AI agents to automate import compliance analysis, HS code classification, and decision making.
+
+**Tech:** React · Node.js · FastAPI · Sentence Transformers · FAISS · Multi-Agent AI
+**Code:** [github.com/saransid23/importsense](https://github.com/saransid23/importsense)
+
+---
+
+### 2. Object Detection System: Real-time Object Detection
+A real-time computer vision platform built with YOLOv5 and TensorFlow that detects and classifies objects from live video streams with high accuracy and low latency.
+
+**Tech:** Python · YOLOv5 · TensorFlow · OpenCV · Flask
+**Code:** [github.com/saransid23/object-detection](https://github.com/saransid23/object-detection)
+
+---
+
+### 3. City Care: Smart City Management & Citizen Service Platform
+A smart city platform where citizens can report issues, track complaints, and view analytics, improving communication between the public and local authorities through AI-powered automation.
+
+**Tech:** React · Node.js · Express · MongoDB · Socket.IO · AI Analytics
+**Code:** [github.com/saransid23/city-care](https://github.com/saransid23/city-care)
+
+---
+
+## 📫 Connect
+
+[GitHub](https://github.com/saransid23) · [LinkedIn](https://www.linkedin.com/in/saran-siddarth-s-b49662371) · [Email](mailto:saransid23@gmail.com)
