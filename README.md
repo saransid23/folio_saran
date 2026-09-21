@@ -1,6 +1,6 @@
 # Hi, I'm Saran Siddarth 👋
 
-**AI Engineer & Full Stack Developer** based in Coimbatore, India.
+**AI Engineer & Full Stack Developer** 
 
 I build intelligent applications at the intersection of artificial intelligence and modern web development, from deep learning models to production-ready web apps.
 
