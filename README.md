@@ -16,35 +16,51 @@ I build intelligent applications at the intersection of artificial intelligence 
 | **Frontend** | React, Next.js |
 | **Backend** | Node.js, Express, FastAPI, Flask |
 | **Databases** | MongoDB, SQL |
-| **AI / ML** | TensorFlow, Scikit-learn, YOLOv5, OpenCV, Sentence Transformers, FAISS |
+| **AI / ML** | TensorFlow, Scikit-learn, YOLOv5, OpenCV, Sentence Transformers, FAISS, LangChain, Whisper |
 | **Data Science** | NumPy, Pandas |
-| **Tools & DevOps** | Git, Docker, Socket.IO |
+| **Tools & DevOps** | Git, Docker, Socket.IO, FFmpeg, yt-dlp |
 
 ---
 
 ## 🚀 Projects
 
-### 1. ImportSense AI: AI Import Compliance Platform
-An intelligent multi-agent platform that uses sentence transformers, FAISS vector search, and AI agents to automate import compliance analysis, HS code classification, and decision making.
+### 1. Tubemint
+A self-hosted YouTube video inspector and downloader built with FastAPI, yt-dlp, and FFmpeg. Features video metadata extraction, resolution detection up to 4K, audio conversion (MP3/M4A), and automated background cleanup.
 
-**Tech:** React · Node.js · FastAPI · Sentence Transformers · FAISS · Multi-Agent AI
-**Code:** [github.com/saransid23/importsense](https://github.com/saransid23/importsense)
-
----
-
-### 2. Object Detection System: Real-time Object Detection
-A real-time computer vision platform built with YOLOv5 and TensorFlow that detects and classifies objects from live video streams with high accuracy and low latency.
-
-**Tech:** Python · YOLOv5 · TensorFlow · OpenCV · Flask
-**Code:** [github.com/saransid23/object-detection](https://github.com/saransid23/object-detection)
+**Tech:** FastAPI · Python · yt-dlp · FFmpeg · Next.js · Tailwind CSS  
+**Code:** [github.com/saransid23/tubemint](https://github.com/saransid23/tubemint) · **Live:** [tubemint.vercel.app](https://tubemint.vercel.app)
 
 ---
 
-### 3. City Care: Smart City Management & Citizen Service Platform
-A smart city platform where citizens can report issues, track complaints, and view analytics, improving communication between the public and local authorities through AI-powered automation.
+### 2. Spencer AI Bot
+A Python-based voice assistant engineered to think, reason, and solve problems like a technical consultant. Includes automated coding/debugging support, system design guidance, and persistent memory using LangChain, Whisper, and FAISS.
 
-**Tech:** React · Node.js · Express · MongoDB · Socket.IO · AI Analytics
+**Tech:** Python · FastAPI · LangChain · Whisper · FAISS · MongoDB · Flask  
+**Code:** [github.com/saransid23/Spencer-AI-bot](https://github.com/saransid23/Spencer-AI-bot)
+
+---
+
+### 3. ImportSense AI
+An intelligent multi-agent import compliance platform that estimates customs duties, GST, shipping costs, and landed prices for international purchases using NLP, FAISS vector search, and live regulations.
+
+**Tech:** React · JavaScript · FastAPI · Sentence Transformers · FAISS · Multi-Agent AI  
+**Code:** [github.com/saransid23/import-sense-AI](https://github.com/saransid23/import-sense-AI) · **Live:** [import-sense-ai.vercel.app](https://import-sense-ai.vercel.app)
+
+---
+
+### 4. CityCare
+A smart city management platform enabling citizens to report issues like potholes, streetlights, and hazards with AI keyword detection to prioritize complaints for local authorities.
+
+**Tech:** JavaScript · Node.js · Express · MongoDB · Socket.IO · AI Analytics  
 **Code:** [github.com/saransid23/city-care](https://github.com/saransid23/city-care)
+
+---
+
+### 5. Object Detection System
+A real-time computer vision platform built using YOLOv5 and TensorFlow capable of detecting and classifying objects with high accuracy and low latency from live video streams.
+
+**Tech:** Python · YOLOv5 · TensorFlow · OpenCV · Flask  
+**Code:** [github.com/saransid23/object-detection](https://github.com/saransid23/object-detection)
 
 ---
 

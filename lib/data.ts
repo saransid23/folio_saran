@@ -40,28 +40,64 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
+    id: "tubemint",
+    title: "Tubemint",
+    description: "Self-Hosted YouTube Video & Audio Downloader",
+    longDescription:
+      "A self-hosted YouTube video inspector and downloader built with FastAPI, yt-dlp, and FFmpeg. Features video metadata extraction, up to 4K resolution detection, audio conversion (MP3/M4A), and an automated background file cleanup system.",
+    techStack: ["FastAPI", "Python", "yt-dlp", "FFmpeg", "Next.js", "Tailwind CSS"],
+    github: "https://github.com/saransid23/tubemint",
+    liveUrl: "https://tubemint.vercel.app",
+    image: "/projects/tubemint.jpg",
+    color: "#FF3366",
+  },
+  {
+    id: "spencer-ai",
+    title: "Spencer AI Bot",
+    description: "Voice-Enabled AI Technical Assistant & Engineer",
+    longDescription:
+      "A Python-based voice assistant engineered to think, reason, and solve problems like a technical consultant. Includes automated coding/debugging support, system design guidance, and persistent memory using LangChain, Whisper, and FAISS vector databases.",
+    techStack: ["Python", "FastAPI", "LangChain", "Whisper", "FAISS", "MongoDB", "Flask"],
+    github: "https://github.com/saransid23/Spencer-AI-bot",
+    liveUrl: "#",
+    image: "/projects/spencer_ai.jpg",
+    color: "#A855F7",
+  },
+  {
     id: "importsense",
     title: "ImportSense AI",
-    description: "AI Import Compliance Platform",
+    description: "AI Import Compliance & Landed Cost Calculator",
     longDescription:
-      "An intelligent multi-agent platform that leverages sentence transformers, FAISS vector search, and AI agents to automate import compliance analysis, HS code classification, and intelligent decision making.",
+      "An intelligent multi-agent import compliance platform that estimates customs duties, GST, shipping costs, and landed prices for international purchases using NLP, FAISS vector search, and live regulations.",
     techStack: [
       "React",
-      "Node.js",
+      "JavaScript",
       "FastAPI",
       "Sentence Transformers",
       "FAISS",
       "Multi-Agent AI",
     ],
-    github: "https://github.com/saransid23/importsense",
-    liveUrl: "#",
+    github: "https://github.com/saransid23/import-sense-AI",
+    liveUrl: "https://import-sense-ai.vercel.app",
     image: "/projects/importsense.png",
     color: "#D9FF2F",
   },
   {
+    id: "citycare",
+    title: "CityCare",
+    description: "Smart City Management & Citizen Service Platform",
+    longDescription:
+      "A smart city management platform enabling citizens to report issues like potholes, streetlights, and hazards. AI-based keyword detection prioritizes complaints for local authorities to accelerate resolution.",
+    techStack: ["JavaScript", "Node.js", "Express", "MongoDB", "Socket.IO", "AI Analytics"],
+    github: "https://github.com/saransid23/city-care",
+    liveUrl: "#",
+    image: "/projects/citycare.png",
+    color: "#4ECDC4",
+  },
+  {
     id: "object-detection",
     title: "Object Detection System",
-    description: "Real-time Object Detection Platform",
+    description: "Real-Time Computer Vision Platform",
     longDescription:
       "A real-time computer vision platform built using YOLOv5 and TensorFlow capable of detecting and classifying objects with high accuracy and low latency from live video streams.",
     techStack: ["Python", "YOLOv5", "TensorFlow", "OpenCV", "Flask"],
@@ -69,18 +105,6 @@ export const PROJECTS: Project[] = [
     liveUrl: "#",
     image: "/projects/objectdetection.png",
     color: "#FF6B35",
-  },
-  {
-    id: "citycare",
-    title: "City Care",
-    description: "Smart City Management & Citizen Service Platform",
-    longDescription:
-      "A smart city management platform that allows citizens to report issues, monitor complaints, visualize analytics, and improve communication between the public and local authorities using AI-powered automation.",
-    techStack: ["React", "Node.js", "Express", "MongoDB", "Socket.IO", "AI Analytics"],
-    github: "https://github.com/saransid23/city-care",
-    liveUrl: "#",
-    image: "/projects/citycare.png",
-    color: "#4ECDC4",
   },
 ];
 

@@ -17,82 +17,75 @@ gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement[]>([]);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const pathsRef = useRef<(SVGPathElement | null)[]>([]);
 
-  const [pathD1, setPathD1] = useState("");
-  const [pathD2, setPathD2] = useState("");
+  const [pathsD, setPathsD] = useState<string[]>([]);
   const [showNode, setShowNode] = useState(false);
-
-  const path1Ref = useRef<SVGPathElement>(null);
-  const path2Ref = useRef<SVGPathElement>(null);
   const nodeRef = useRef<SVGCircleElement>(null);
 
-  // Dynamic SVG Bezier Path calculation based on card offset locations
+  // Dynamic SVG Bezier Path calculation for ALL project cards
   const updatePaths = () => {
-    const card1 = cardsRef.current[0];
-    const card2 = cardsRef.current[1];
-    const card3 = cardsRef.current[2];
+    const newPaths: string[] = [];
 
-    if (card1 && card2 && card3) {
-      // Card 1
-      const w1 = card1.offsetWidth;
-      const h1 = card1.offsetHeight;
-      const l1 = card1.offsetLeft;
-      const t1 = card1.offsetTop;
+    for (let i = 0; i < PROJECTS.length - 1; i++) {
+      const cardA = cardsRef.current[i];
+      const cardB = cardsRef.current[i + 1];
 
-      // Card 2
-      const w2 = card2.offsetWidth;
-      const h2 = card2.offsetHeight;
-      const l2 = card2.offsetLeft;
-      const t2 = card2.offsetTop;
+      if (cardA && cardB) {
+        const wA = cardA.offsetWidth;
+        const hA = cardA.offsetHeight;
+        const lA = cardA.offsetLeft;
+        const tA = cardA.offsetTop;
 
-      // Card 3
-      const w3 = card3.offsetWidth;
-      const h3 = card3.offsetHeight;
-      const l3 = card3.offsetLeft;
-      const t3 = card3.offsetTop;
+        const wB = cardB.offsetWidth;
+        const hB = cardB.offsetHeight;
+        const lB = cardB.offsetLeft;
+        const tB = cardB.offsetTop;
 
-      // Curve 1: Bottom-left of Card 1 to Top-right of Card 2
-      // Bleed 20px inside card boundary to hide lines behind card background
-      const startX1 = l1 + 20;
-      const startY1 = t1 + h1 - 20;
-      const endX1 = l2 + w2 - 20;
-      const endY1 = t2 + 20;
+        if (i % 2 === 0) {
+          // Card A is Right, Card B is Left
+          // Bottom-left of Card A to Top-right of Card B
+          const startX = lA + 20;
+          const startY = tA + hA - 20;
+          const endX = lB + wB - 20;
+          const endY = tB + 20;
 
-      // Create a smooth curved Bezier path that sweeps out to the left
-      const dy1 = endY1 - startY1;
-      const cpX1_1 = Math.min(startX1, endX1) - 150; // Sweeps wide left
-      const cpY1_1 = startY1 + dy1 * 0.3;
-      const cpX1_2 = Math.min(startX1, endX1) - 150;
-      const cpY1_2 = startY1 + dy1 * 0.7;
+          const dy = endY - startY;
+          const cpX1 = Math.min(startX, endX) - 150;
+          const cpY1 = startY + dy * 0.3;
+          const cpX2 = Math.min(startX, endX) - 150;
+          const cpY2 = startY + dy * 0.7;
 
-      setPathD1(`M ${startX1} ${startY1} C ${cpX1_1} ${cpY1_1}, ${cpX1_2} ${cpY1_2}, ${endX1} ${endY1}`);
+          newPaths.push(`M ${startX} ${startY} C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${endX} ${endY}`);
+        } else {
+          // Card A is Left, Card B is Right
+          // Bottom-right of Card A to Top-left of Card B
+          const startX = lA + wA - 20;
+          const startY = tA + hA - 20;
+          const endX = lB + 20;
+          const endY = tB + 20;
 
-      // Curve 2: Bottom-right of Card 2 to Top-left of Card 3
-      // Bleed 20px inside card boundary to hide lines behind card background
-      const startX2 = l2 + w2 - 20;
-      const startY2 = t2 + h2 - 20;
-      const endX2 = l3 + 20;
-      const endY2 = t3 + 20;
+          const dy = endY - startY;
+          const cpX1 = Math.max(startX, endX) + 150;
+          const cpY1 = startY + dy * 0.3;
+          const cpX2 = Math.max(startX, endX) + 150;
+          const cpY2 = startY + dy * 0.7;
 
-      // Create a smooth curved Bezier path that sweeps out to the right
-      const dy2 = endY2 - startY2;
-      const cpX2_1 = Math.max(startX2, endX2) + 150; // Sweeps wide right
-      const cpY2_1 = startY2 + dy2 * 0.3;
-      const cpX2_2 = Math.max(startX2, endX2) + 150;
-      const cpY2_2 = startY2 + dy2 * 0.7;
-
-      setPathD2(`M ${startX2} ${startY2} C ${cpX2_1} ${cpY2_1}, ${cpX2_2} ${cpY2_2}, ${endX2} ${endY2}`);
+          newPaths.push(`M ${startX} ${startY} C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${endX} ${endY}`);
+        }
+      }
     }
+    setPathsD(newPaths);
   };
 
   useEffect(() => {
     updatePaths();
-    
-    // Wait for fonts and layout stabilization
+
+    // Wait for layout stabilization
     const timer = setTimeout(updatePaths, 300);
     window.addEventListener("resize", updatePaths);
-    
+
     return () => {
       clearTimeout(timer);
       window.removeEventListener("resize", updatePaths);
@@ -104,13 +97,12 @@ export default function Projects() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Individual card tilt effects on mouse hover
+      // Mouse tilt effect for all cards
       cardsRef.current.forEach((card) => {
         if (!card) return;
 
         const onMouseMove = (e: MouseEvent) => {
-          // Only apply hover tilt if the card is already visible
-          if (gsap.getProperty(card, "opacity") as number < 0.9) return;
+          if ((gsap.getProperty(card, "opacity") as number) < 0.9) return;
 
           const rect = card.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
@@ -146,88 +138,73 @@ export default function Projects() {
     return () => ctx.revert();
   }, []);
 
-  // Animation: card 1 reveals on enter; path scrubs as you scroll; card 2/3 reveal when path finishes
+  // Animation: reveal Card 1 on scroll enter; path scrubs on scroll to reveal each subsequent card
   useEffect(() => {
-    if (!pathD1 || !pathD2) return;
+    if (pathsD.length === 0) return;
 
     const section = sectionRef.current;
-    const path1 = path1Ref.current;
-    const path2 = path2Ref.current;
     const node = nodeRef.current;
-    const card1 = cardsRef.current[0];
-    const card2 = cardsRef.current[1];
-    const card3 = cardsRef.current[2];
 
-    if (!section || !card1 || !card2 || !card3 || !path1 || !path2 || !node) return;
+    if (!section || !node) return;
 
     const ctx = gsap.context(() => {
-      const path1Length = path1.getTotalLength();
-      const path2Length = path2.getTotalLength();
+      // Set all cards initial hidden state
+      cardsRef.current.forEach((card) => {
+        if (card) {
+          gsap.set(card, { opacity: 0, scale: 0.9, y: 40, filter: "blur(8px)" });
+        }
+      });
 
-      gsap.set(path1, { strokeDasharray: path1Length, strokeDashoffset: path1Length });
-      gsap.set(path2, { strokeDasharray: path2Length, strokeDashoffset: path2Length });
-      gsap.set([card1, card2, card3], { opacity: 0, scale: 0.9, y: 40, filter: "blur(8px)" });
+      // Card 1 reveals when scrolled into viewport
+      const card1 = cardsRef.current[0];
+      if (card1) {
+        ScrollTrigger.create({
+          trigger: card1,
+          start: "top 82%",
+          onEnter: () =>
+            gsap.to(card1, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" }),
+        });
+      }
+
       gsap.set(node, { opacity: 0 });
       setShowNode(true);
 
-      // Card 1 reveals when it scrolls into view
-      ScrollTrigger.create({
-        trigger: card1,
-        start: "top 82%",
-        onEnter: () =>
-          gsap.to(card1, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" }),
-      });
+      // Scrub each path & reveal next card dynamically for ALL projects
+      pathsD.forEach((_, i) => {
+        const pathEl = pathsRef.current[i];
+        const cardCurrent = cardsRef.current[i];
+        const cardNext = cardsRef.current[i + 1];
 
-      // Path 1 scrubs while card1 is well into the viewport;
-      // card2 is revealed only when the line finishes (onLeave)
-      const tl1 = gsap.timeline({
-        scrollTrigger: {
-          trigger: card1,
-          start: "top 40%",
-          end: "top -15%",
-          scrub: 0.6,
-          onEnter: () => gsap.set(node, { opacity: 1 }),
-          onLeaveBack: () => gsap.set(node, { opacity: 0 }),
-          onLeave: () => {
-            // Line has finished drawing — now reveal card 2
-            gsap.to(node, { opacity: 0, duration: 0.2 });
-            gsap.to(card2, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" });
-          },
-          onEnterBack: () => {
-            // Scrolling back up — hide card 2 again
-            gsap.to(card2, { opacity: 0, scale: 0.9, y: 40, filter: "blur(8px)", duration: 0.3 });
-          },
-        },
-      });
-      tl1.to(path1, { strokeDashoffset: 0, ease: "none" }, 0);
-      tl1.to(node, { motionPath: { path: path1, align: path1, alignOrigin: [0.5, 0.5] }, ease: "none" }, 0);
+        if (!pathEl || !cardCurrent || !cardNext) return;
 
-      // Path 2 scrubs while card2 is well into the viewport;
-      // card3 is revealed only when the line finishes (onLeave)
-      const tl2 = gsap.timeline({
-        scrollTrigger: {
-          trigger: card2,
-          start: "top 40%",
-          end: "top -15%",
-          scrub: 0.6,
-          onEnter: () => gsap.set(node, { opacity: 1 }),
-          onLeaveBack: () => gsap.set(node, { opacity: 0 }),
-          onLeave: () => {
-            gsap.to(node, { opacity: 0, duration: 0.2 });
-            gsap.to(card3, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" });
-          },
-          onEnterBack: () => {
-            gsap.to(card3, { opacity: 0, scale: 0.9, y: 40, filter: "blur(8px)", duration: 0.3 });
-          },
-        },
-      });
-      tl2.to(path2, { strokeDashoffset: 0, ease: "none" }, 0);
-      tl2.to(node, { motionPath: { path: path2, align: path2, alignOrigin: [0.5, 0.5] }, ease: "none" }, 0);
+        const pathLength = pathEl.getTotalLength();
+        gsap.set(pathEl, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
 
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: cardCurrent,
+            start: "top 40%",
+            end: "top -15%",
+            scrub: 0.6,
+            onEnter: () => gsap.set(node, { opacity: 1 }),
+            onLeaveBack: () => gsap.set(node, { opacity: 0 }),
+            onLeave: () => {
+              gsap.to(node, { opacity: 0, duration: 0.2 });
+              gsap.to(cardNext, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" });
+            },
+            onEnterBack: () => {
+              gsap.to(cardNext, { opacity: 0, scale: 0.9, y: 40, filter: "blur(8px)", duration: 0.3 });
+            },
+          },
+        });
+
+        tl.to(pathEl, { strokeDashoffset: 0, ease: "none" }, 0);
+        tl.to(node, { motionPath: { path: pathEl, align: pathEl, alignOrigin: [0.5, 0.5] }, ease: "none" }, 0);
+      });
     }, section);
 
     return () => ctx.revert();
-  }, [pathD1, pathD2]);
+  }, [pathsD]);
 
   return (
     <section ref={sectionRef} id="projects" className="relative bg-background overflow-hidden py-16 md:py-24">
@@ -248,29 +225,25 @@ export default function Projects() {
         ref={scrollContainerRef}
         className="relative max-w-6xl mx-auto px-6 md:px-12 py-8 flex flex-col gap-16 md:gap-24"
       >
-        {/* Storytelling Path Animation Canvas */}
+        {/* Dynamic Storytelling Path Animation Canvas */}
         <svg
           className="absolute inset-0 pointer-events-none z-0"
           style={{ width: "100%", height: "100%", overflow: "visible" }}
         >
-          <path
-            ref={path1Ref}
-            d={pathD1}
-            fill="none"
-            stroke="var(--color-accent, #D9FF3F)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            style={{ opacity: pathD1 ? 0.35 : 0 }}
-          />
-          <path
-            ref={path2Ref}
-            d={pathD2}
-            fill="none"
-            stroke="var(--color-accent, #D9FF3F)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            style={{ opacity: pathD2 ? 0.35 : 0 }}
-          />
+          {pathsD.map((d, i) => (
+            <path
+              key={i}
+              ref={(el) => {
+                pathsRef.current[i] = el;
+              }}
+              d={d}
+              fill="none"
+              stroke="var(--color-accent, #D9FF3F)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              style={{ opacity: d ? 0.35 : 0 }}
+            />
+          ))}
           <circle
             ref={nodeRef}
             r="8"
@@ -287,14 +260,14 @@ export default function Projects() {
         </svg>
 
         {PROJECTS.map((project, i) => {
-          // Stagger card alignments: Card 1 (Right), Card 2 (Left), Card 3 (Right)
-          const alignClass = i === 1 ? "self-start" : "self-end";
+          // Stagger card alignments: Card 0 (Right), Card 1 (Left), Card 2 (Right), Card 3 (Left)...
+          const alignClass = i % 2 === 1 ? "self-start" : "self-end";
 
           return (
             <div
               key={project.id}
               ref={(el) => {
-                if (el) cardsRef.current[i] = el;
+                cardsRef.current[i] = el;
               }}
               data-cursor="view"
               className={`relative w-full md:w-[50%] lg:w-[45%] shrink-0 group z-10 bg-background ${alignClass}`}
@@ -302,9 +275,8 @@ export default function Projects() {
             >
               {/* Project Card */}
               <div className="relative rounded-2xl overflow-hidden border border-border bg-surface">
-                {/* Image area — fixed aspect ratio, no overlap */}
+                {/* Image area */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-black">
-                  {/* Project image */}
                   <img
                     src={project.image}
                     alt={project.title}
@@ -325,11 +297,11 @@ export default function Projects() {
                   >
                     0{i + 1}
                   </span>
-                  {/* Bottom gradient for smooth transition to content */}
+                  {/* Bottom gradient */}
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-surface to-transparent z-10" />
                 </div>
 
-                {/* Content — flows naturally below the image */}
+                {/* Content */}
                 <div className="relative bg-surface px-6 pb-6 pt-2 md:px-8 md:pb-8 md:pt-3">
                   <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-2 text-foreground">
                     {project.title}
@@ -381,7 +353,6 @@ export default function Projects() {
             </div>
           );
         })}
-
       </div>
     </section>
   );
