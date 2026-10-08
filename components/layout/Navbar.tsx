@@ -142,15 +142,6 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <a
-              href={PERSONAL.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-full border border-border hover:border-foreground transition-colors duration-300"
-            >
-              <Download size={14} />
-              Resume
-            </a>
-            <a
               href="#contact"
               onClick={(e) => {
                 e.preventDefault();
@@ -210,15 +201,6 @@ export default function Navbar() {
             );
           })}
           <div className="flex items-center gap-4 mt-8">
-            <a
-              href={PERSONAL.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-lg font-medium px-6 py-3 rounded-full border border-border"
-            >
-              <Download size={18} />
-              Resume
-            </a>
             <a
               href="#contact"
               onClick={(e) => {

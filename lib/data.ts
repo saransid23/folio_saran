@@ -7,7 +7,6 @@ export const PERSONAL = {
   title: "AI Engineer & Full Stack Developer",
   location: "Coimbatore",
   email: "saransid23@gmail.com",
-  resumeUrl: "https://delicate-sea-370.linkyhost.com",
   github: "https://github.com/saransid23",
   linkedin: "https://www.linkedin.com/in/saran-siddarth-s-b49662371?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   twitter: "https://twitter.com",

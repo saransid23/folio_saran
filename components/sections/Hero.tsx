@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PERSONAL } from "@/lib/data";
 import MagneticButton from "@/components/animations/MagneticButton";
 import {
-  FileText,
+  ArrowUpRight,
   MapPin,
   CircleDot,
   ChevronDown,
@@ -188,13 +188,11 @@ export default function Hero() {
         >
           <MagneticButton>
             <a
-              href={PERSONAL.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contact"
               className="magnetic-btn inline-flex items-center gap-2 px-8 py-4 rounded-full bg-foreground text-background font-bold text-sm tracking-wide hover:text-foreground transition-colors duration-500"
             >
-              <FileText size={16} />
-              View Resume
+              Get In Touch
+              <ArrowUpRight size={16} />
             </a>
           </MagneticButton>
           <MagneticButton>
