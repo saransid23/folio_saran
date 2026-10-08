@@ -149,48 +149,84 @@ export const SKILLS_ORBIT = [
   "SQL",
   "Docker",
 ];
-export const SERVICES = [
+export interface ServiceItem {
+  id: string;
+  number: string;
+  title: string;
+  shortDesc: string;
+  description: string;
+  icon: string;
+  color: string;
+  bgGlow: string;
+  tags: string[];
+}
+
+export const SERVICES: ServiceItem[] = [
+  {
+    id: "ai",
+    number: "01",
+    title: "AI & Multi-Agent",
+    shortDesc: "Autonomous Agentic Flows, RAG Pipelines & Voice Intelligence",
+    description: "Autonomous Agentic Flows, RAG Pipelines & Voice Intelligence",
+    icon: "Brain",
+    color: "#D9FF3F",
+    bgGlow: "rgba(217, 255, 63, 0.15)",
+    tags: ["LangChain", "FastAPI", "FAISS", "Whisper", "Python"],
+  },
   {
     id: "frontend",
-    title: "Frontend Development",
-    description:
-      "Crafting pixel-perfect, responsive interfaces with React, Next.js, and modern CSS. Focus on performance, accessibility, and delightful user experiences.",
+    number: "02",
+    title: "Frontend Engineering",
+    shortDesc: "High-Speed Motion Interfaces, GSAP Physics & Reactive Web Apps",
+    description: "High-Speed Motion Interfaces, GSAP Physics & Reactive Web Apps",
     icon: "Monitor",
+    color: "#00F0FF",
+    bgGlow: "rgba(0, 240, 255, 0.15)",
+    tags: ["Next.js 15", "React 19", "GSAP", "Tailwind", "TypeScript"],
   },
   {
     id: "fullstack",
-    title: "Full Stack Development",
-    description:
-      "End-to-end web application development from database design to deployment. Building scalable architectures with modern tech stacks.",
+    number: "03",
+    title: "Full Stack Systems",
+    shortDesc: "Scalable Microservices, Real-Time WebSockets & Database Architecture",
+    description: "Scalable Microservices, Real-Time WebSockets & Database Architecture",
     icon: "Layers",
-  },
-  {
-    id: "ai",
-    title: "AI Solutions",
-    description:
-      "Designing and deploying intelligent systems using LLMs, multi-agent architectures, and custom AI pipelines for real-world applications.",
-    icon: "Brain",
+    color: "#A855F7",
+    bgGlow: "rgba(168, 85, 247, 0.15)",
+    tags: ["Node.js", "Express", "FastAPI", "MongoDB", "PostgreSQL"],
   },
   {
     id: "ml",
-    title: "Machine Learning",
-    description:
-      "Building and training custom ML models for computer vision, NLP, and predictive analytics with production-grade deployment.",
+    number: "04",
+    title: "Machine Learning & Vision",
+    shortDesc: "YOLO Real-Time Object Detection & Neural Image Processing",
+    description: "YOLO Real-Time Object Detection & Neural Image Processing",
     icon: "Cpu",
+    color: "#FF3366",
+    bgGlow: "rgba(255, 51, 102, 0.15)",
+    tags: ["Python", "YOLOv5", "TensorFlow", "OpenCV", "PyTorch"],
   },
   {
     id: "datascience",
-    title: "Data Science",
-    description:
-      "Extracting meaningful insights from data using machine learning, statistical analysis, data visualization, and predictive modeling to solve real-world problems.",
+    number: "05",
+    title: "Data Science & Analytics",
+    shortDesc: "Predictive Analytics, Statistical Modeling & Automated ETL Pipelines",
+    description: "Predictive Analytics, Statistical Modeling & Automated ETL Pipelines",
     icon: "Database",
+    color: "#FF9900",
+    bgGlow: "rgba(255, 153, 0, 0.15)",
+    tags: ["Python", "Pandas", "NumPy", "Scikit-Learn", "SQL"],
   },
   {
     id: "automation",
-    title: "Automation",
-    description:
-      "Streamlining workflows with intelligent automation, CI/CD pipelines, testing frameworks, and DevOps best practices.",
+    number: "06",
+    title: "DevOps & Automation",
+    shortDesc: "Docker Containerization, Task Cleanups & CI/CD Pipelines",
+    description: "Docker Containerization, Task Cleanups & CI/CD Pipelines",
     icon: "Zap",
+    color: "#10B981",
+    bgGlow: "rgba(16, 185, 129, 0.15)",
+    tags: ["Docker", "GitHub Actions", "Linux", "FFmpeg", "Vercel"],
   },
 ];
 export const TESTIMONIALS = [

@@ -1,347 +1,330 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
- 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MotionPathPlugin } from "gsap/MotionPathPlugin";
-import { SERVICES } from "@/lib/data";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SERVICES, type ServiceItem } from "@/lib/data";
 import SectionReveal from "@/components/animations/SectionReveal";
 import {
+  Brain,
   Monitor,
   Layers,
-  Brain,
   Cpu,
   Database,
   Zap,
+  Plus,
+  Minus,
+  ArrowUpRight,
+  Sliders,
+  Layers3,
   type LucideIcon,
 } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
-
 const iconMap: Record<string, LucideIcon> = {
+  Brain,
   Monitor,
   Layers,
-  Brain,
   Cpu,
   Database,
   Zap,
 };
 
 export default function Services() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<HTMLDivElement[]>([]);
-  const [paths, setPaths] = useState<string[]>([]);
-  const [showNode, setShowNode] = useState(false);
-
-  const pathRefs = useRef<(SVGPathElement | null)[]>([]);
-  const nodeRef = useRef<SVGCircleElement>(null);
-
-  // Build Bezier curve paths connecting consecutive cards
-  const updatePaths = () => {
-    const cards = cardsRef.current;
-    if (cards.length < 2) return;
-
-    const newPaths: string[] = [];
-
-    for (let i = 0; i < cards.length - 1; i++) {
-      const cardA = cards[i];
-      const cardB = cards[i + 1];
-      if (!cardA || !cardB) continue;
-
-      const wA = cardA.offsetWidth;
-      const hA = cardA.offsetHeight;
-      const lA = cardA.offsetLeft;
-      const tA = cardA.offsetTop;
-
-      const wB = cardB.offsetWidth;
-      const hB = cardB.offsetHeight;
-      const lB = cardB.offsetLeft;
-      const tB = cardB.offsetTop;
-
-      // Determine curve direction based on card alignment
-      // Even-indexed cards are self-end (right), odd-indexed are self-start (left)
-      const aIsRight = i % 2 === 0;
-
-      let startX: number, startY: number, endX: number, endY: number;
-
-      if (aIsRight) {
-        // Card A is on the right → exit from bottom-left, enter Card B from top-right
-        startX = lA + 20;
-        startY = tA + hA - 20;
-        endX = lB + wB - 20;
-        endY = tB + 20;
-      } else {
-        // Card A is on the left → exit from bottom-right, enter Card B from top-left
-        startX = lA + wA - 20;
-        startY = tA + hA - 20;
-        endX = lB + 20;
-        endY = tB + 20;
-      }
-
-      const dy = endY - startY;
-
-      let cpX1: number, cpY1: number, cpX2: number, cpY2: number;
-
-      if (aIsRight) {
-        // Sweep left
-        cpX1 = Math.min(startX, endX) - 150;
-        cpY1 = startY + dy * 0.3;
-        cpX2 = Math.min(startX, endX) - 150;
-        cpY2 = startY + dy * 0.7;
-      } else {
-        // Sweep right
-        cpX1 = Math.max(startX, endX) + 150;
-        cpY1 = startY + dy * 0.3;
-        cpX2 = Math.max(startX, endX) + 150;
-        cpY2 = startY + dy * 0.7;
-      }
-
-      newPaths.push(
-        `M ${startX} ${startY} C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${endX} ${endY}`
-      );
-    }
-
-    setPaths(newPaths);
-  };
-
-  useEffect(() => {
-    updatePaths();
-
-    const timer = setTimeout(updatePaths, 300);
-    window.addEventListener("resize", updatePaths);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", updatePaths);
-    };
-  }, []);
-
-  // 3D tilt on hover — same as Projects
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const ctx = gsap.context(() => {
-      cardsRef.current.forEach((card) => {
-        if (!card) return;
-
-        const onMouseMove = (e: MouseEvent) => {
-          if ((gsap.getProperty(card, "opacity") as number) < 0.9) return;
-
-          const rect = card.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          const rotateX = ((e.clientY - centerY) / rect.height) * -10;
-          const rotateY = ((e.clientX - centerX) / rect.width) * 10;
-
-          gsap.to(card, {
-            rotateX,
-            rotateY,
-            scale: 1.02,
-            duration: 0.3,
-            ease: "power2.out",
-            transformPerspective: 1000,
-          });
-        };
-
-        const onMouseLeave = () => {
-          gsap.to(card, {
-            rotateX: 0,
-            rotateY: 0,
-            scale: 1,
-            duration: 0.5,
-            ease: "elastic.out(1, 0.5)",
-          });
-        };
-
-        card.addEventListener("mousemove", onMouseMove);
-        card.addEventListener("mouseleave", onMouseLeave);
-      });
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
-
-  // Animation: card 0 reveals on enter; each subsequent card reveals when the line reaches it
-  useEffect(() => {
-    if (paths.length === 0) return;
-
-    const section = sectionRef.current;
-    const node = nodeRef.current;
-    const cards = cardsRef.current;
-    const svgPaths = pathRefs.current;
-
-    if (!section || !node || cards.length < 2) return;
-
-    const ctx = gsap.context(() => {
-      svgPaths.forEach((p) => {
-        if (!p) return;
-        const len = p.getTotalLength();
-        gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
-      });
-
-      gsap.set(cards, { opacity: 0, scale: 0.9, y: 40, filter: "blur(8px)" });
-      gsap.set(node, { opacity: 0 });
-      setShowNode(true);
-
-      // Card 0: reveal when it enters the viewport
-      const card0 = cards[0];
-      if (card0) {
-        ScrollTrigger.create({
-          trigger: card0,
-          start: "top 82%",
-          onEnter: () =>
-            gsap.to(card0, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" }),
-        });
-      }
-
-      // For each path: scrub it as cardA scrolls through the viewport,
-      // then reveal cardB only when the line finishes (onLeave)
-      paths.forEach((_, i) => {
-        const pathEl = svgPaths[i];
-        const cardA = cards[i];
-        const cardB = cards[i + 1];
-        if (!pathEl || !cardA || !cardB) return;
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: cardA,
-            start: "top 40%",
-            end: "top -15%",
-            scrub: 0.6,
-            onEnter: () => gsap.set(node, { opacity: 1 }),
-            onLeaveBack: () => gsap.set(node, { opacity: 0 }),
-            onLeave: () => {
-              // Line reached cardB — reveal it now
-              gsap.to(node, { opacity: 0, duration: 0.2 });
-              gsap.to(cardB, { opacity: 1, scale: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power3.out" });
-            },
-            onEnterBack: () => {
-              // Scrolling back up — hide cardB again
-              gsap.to(cardB, { opacity: 0, scale: 0.9, y: 40, filter: "blur(8px)", duration: 0.3 });
-            },
-          },
-        });
-        tl.to(pathEl, { strokeDashoffset: 0, ease: "none" }, 0);
-        tl.to(node, { motionPath: { path: pathEl, align: pathEl, alignOrigin: [0.5, 0.5] }, ease: "none" }, 0);
-      });
-
-    }, section);
-
-    return () => ctx.revert();
-  }, [paths]);
+  const [expandedId, setExpandedId] = useState<string>("ai");
+  const [viewMode, setViewMode] = useState<"stack" | "spotlight">("stack");
 
   return (
     <section
-      ref={sectionRef}
       id="services"
-      className="relative bg-background overflow-hidden py-16 md:py-24"
+      className="relative bg-background overflow-hidden py-24 md:py-36 border-t border-border/60"
     >
-      <div className="pt-12 md:pt-16 pb-4 px-6 md:px-12 xl:px-24">
-        <div className="max-w-7xl mx-auto">
-          <SectionReveal>
-            <span className="section-label">What I Do</span>
-            <h2 className="section-title">
-              Services &<br />
-              <span className="text-accent">expertise</span>
-            </h2>
-          </SectionReveal>
+      {/* Background Ambient Ticker */}
+      <div className="absolute top-10 left-0 right-0 overflow-hidden pointer-events-none opacity-[0.03] select-none whitespace-nowrap">
+        <div className="inline-block animate-marquee font-black text-9xl tracking-widest uppercase text-foreground">
+          01 // ARTIFICIAL INTELLIGENCE — 02 // FRONTEND MOTION — 03 // FULL STACK — 04 // MACHINE VISION — 05 // DATA SCIENCE — 06 // DEVOPS —
+        </div>
+        <div className="inline-block animate-marquee font-black text-9xl tracking-widest uppercase text-foreground" aria-hidden="true">
+          01 // ARTIFICIAL INTELLIGENCE — 02 // FRONTEND MOTION — 03 // FULL STACK — 04 // MACHINE VISION — 05 // DATA SCIENCE — 06 // DEVOPS —
         </div>
       </div>
 
-      {/* Staggered vertical container — same layout as Projects */}
-      <div className="relative max-w-6xl mx-auto px-6 md:px-12 py-8 flex flex-col gap-16 md:gap-24">
-        {/* SVG path canvas */}
-        <svg
-          className="absolute inset-0 pointer-events-none z-0"
-          style={{ width: "100%", height: "100%", overflow: "visible" }}
-        >
-          {paths.map((d, i) => (
-            <path
-              key={i}
-              ref={(el) => {
-                pathRefs.current[i] = el;
-              }}
-              d={d}
-              fill="none"
-              stroke="var(--color-accent, #D9FF3F)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              style={{ opacity: d ? 0.35 : 0 }}
-            />
-          ))}
-          <circle
-            ref={nodeRef}
-            r="8"
-            fill="var(--color-accent, #D9FF3F)"
-            stroke="#000000"
-            strokeWidth="2"
-            className="animate-pulse"
-            style={{
-              filter:
-                "drop-shadow(0 0 8px var(--color-accent, #D9FF3F))",
-              opacity: showNode ? 1 : 0,
-              transformOrigin: "center",
-            }}
-          />
-        </svg>
+      {/* Dynamic Ambient Background Light Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[160px] pointer-events-none" />
 
-        {SERVICES.map((service, i) => {
-          const Icon = iconMap[service.icon] || Monitor;
-          // Stagger: even → right, odd → left (same as Projects)
-          const alignClass = i % 2 === 0 ? "self-end" : "self-start";
-
-          return (
-            <div
-              key={service.id}
-              ref={(el) => {
-                if (el) cardsRef.current[i] = el;
-              }}
-              data-cursor="view"
-              className={`relative w-full md:w-[50%] lg:w-[45%] shrink-0 group z-10 bg-background ${alignClass}`}
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              {/* Service Card */}
-              <div className="relative rounded-2xl overflow-hidden border border-border bg-surface p-8 md:p-10">
-                {/* Hover background */}
-                <div className="absolute inset-0 bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                {/* Accent number watermark */}
-                <span
-                  className="absolute top-6 right-6 text-8xl font-extrabold opacity-[0.06] select-none pointer-events-none"
-                  style={{ color: "var(--color-accent)" }}
-                >
-                  0{i + 1}
-                </span>
-
-                <div className="relative z-10">
-                  {/* Icon */}
-                  <div className="w-14 h-14 rounded-xl bg-foreground/5 flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors duration-300">
-                    <Icon
-                      size={26}
-                      className="group-hover:text-accent transition-colors duration-300"
-                    />
-                  </div>
-
-                  <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-3 text-foreground">
-                    {service.title}
-                  </h3>
-
-                  <p className="text-secondary text-sm leading-relaxed">
-                    {service.description}
-                  </p>
-
-                  {/* Arrow indicator */}
-                  <div className="mt-6 flex items-center gap-2 text-sm font-medium text-accent opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                    Learn more →
-                  </div>
-                </div>
-              </div>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        
+        {/* SECTION HEADER & VIEW SWITCHER */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-border pb-8">
+          <SectionReveal>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="w-8 h-[2px] bg-accent" />
+              <span className="text-xs font-mono font-bold tracking-[0.25em] text-accent uppercase">
+                SERVICES & EXPERTISE
+              </span>
             </div>
-          );
-        })}
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground leading-tight">
+              Capability <span className="text-accent">Spectrum</span>
+            </h2>
+          </SectionReveal>
+
+          {/* CREATIVE VIEW MODE TOGGLE */}
+          <div className="flex items-center gap-2 bg-surface/80 border border-border p-1.5 rounded-2xl backdrop-blur-xl shadow-lg">
+            <button
+              onClick={() => setViewMode("stack")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                viewMode === "stack"
+                  ? "bg-accent text-black shadow-md"
+                  : "text-secondary hover:text-foreground"
+              }`}
+            >
+              <Layers3 className="w-4 h-4" />
+              Interactive Stack
+            </button>
+            <button
+              onClick={() => setViewMode("spotlight")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                viewMode === "spotlight"
+                  ? "bg-accent text-black shadow-md"
+                  : "text-secondary hover:text-foreground"
+              }`}
+            >
+              <Sliders className="w-4 h-4" />
+              Spotlight Stage
+            </button>
+          </div>
+        </div>
+
+        {/* ============================================================ */}
+        {/* MODE 1: FULL-WIDTH KINETIC ACCORDION STACK (FRESH & NON-GRID)*/}
+        {/* ============================================================ */}
+        {viewMode === "stack" && (
+          <div className="flex flex-col gap-4">
+            {SERVICES.map((service) => {
+              const Icon = iconMap[service.icon] || Monitor;
+              const isExpanded = expandedId === service.id;
+
+              return (
+                <div
+                  key={service.id}
+                  onClick={() => setExpandedId(isExpanded ? "" : service.id)}
+                  className={`group relative rounded-3xl border transition-all duration-400 cursor-pointer overflow-hidden backdrop-blur-2xl ${
+                    isExpanded
+                      ? "bg-surface/90 border-accent/60 shadow-[0_20px_50px_rgba(0,0,0,0.4)]"
+                      : "bg-surface/40 border-border/80 hover:border-white/30 hover:bg-surface/60"
+                  }`}
+                >
+                  {/* Subtle Accent Edge Beam */}
+                  <div
+                    className="absolute top-0 bottom-0 left-0 w-1.5 transition-colors duration-300"
+                    style={{ backgroundColor: isExpanded ? service.color : "transparent" }}
+                  />
+
+                  {/* Main Row Header */}
+                  <div className="p-6 md:p-8 flex items-center justify-between gap-6">
+                    <div className="flex items-center gap-6 md:gap-10">
+                      {/* Number */}
+                      <span
+                        className="text-2xl md:text-4xl font-mono font-black tracking-tight transition-colors duration-300"
+                        style={{ color: isExpanded ? service.color : "var(--color-muted)" }}
+                      >
+                        {service.number}
+                      </span>
+
+                      {/* Icon */}
+                      <div
+                        className="w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-300 group-hover:scale-110"
+                        style={{
+                          backgroundColor: `${service.color}15`,
+                          borderColor: `${service.color}40`,
+                          color: service.color,
+                        }}
+                      >
+                        <Icon className="w-6 h-6" />
+                      </div>
+
+                      {/* Title & Tagline */}
+                      <div>
+                        <h3 className="text-xl md:text-3xl font-extrabold tracking-tight text-foreground group-hover:text-white transition-colors">
+                          {service.title}
+                        </h3>
+                        <p className="text-xs md:text-sm font-medium text-foreground/80 hidden sm:block mt-1">
+                          {service.shortDesc}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Expand Toggle Button */}
+                    <div
+                      className="w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 shrink-0"
+                      style={{
+                        backgroundColor: isExpanded ? service.color : "rgba(255,255,255,0.05)",
+                        borderColor: isExpanded ? service.color : "rgba(255,255,255,0.1)",
+                        color: isExpanded ? "#000000" : "#FFFFFF",
+                      }}
+                    >
+                      {isExpanded ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                    </div>
+                  </div>
+
+                  {/* EXPANDABLE DETAIL STAGE */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden border-t border-border/60 bg-black/40"
+                      >
+                        <div className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                          
+                          {/* Left Description */}
+                          <div className="space-y-3 max-w-xl">
+                            <span className="text-xs font-mono font-bold uppercase tracking-wider text-accent">
+                              // CORE TECHNICAL SCOPE
+                            </span>
+                            <p className="text-sm md:text-base text-foreground font-medium leading-relaxed">
+                              {service.description}
+                            </p>
+                          </div>
+
+                          {/* Right Tech Tags */}
+                          <div className="flex flex-wrap gap-2 md:justify-end max-w-md">
+                            {service.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-white/10 border border-white/20 text-white shadow-sm"
+                                style={{ borderColor: `${service.color}50` }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ============================================================ */}
+        {/* MODE 2: SPLIT SCREEN SPOTLIGHT STAGE (STUDIO INTERACTIVE)  */}
+        {/* ============================================================ */}
+        {viewMode === "spotlight" && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* LEFT NAVIGATION COLUMN */}
+            <div className="lg:col-span-5 flex flex-col gap-3">
+              {SERVICES.map((service) => {
+                const Icon = iconMap[service.icon] || Monitor;
+                const isSelected = expandedId === service.id;
+
+                return (
+                  <button
+                    key={service.id}
+                    onClick={() => setExpandedId(service.id)}
+                    onMouseEnter={() => setExpandedId(service.id)}
+                    className={`w-full text-left p-5 rounded-2xl border transition-all duration-300 flex items-center justify-between cursor-pointer ${
+                      isSelected
+                        ? "bg-surface border-accent shadow-xl scale-[1.02]"
+                        : "bg-surface/30 border-border/60 hover:bg-surface/60 hover:border-white/20"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span
+                        className="text-lg font-mono font-bold"
+                        style={{ color: isSelected ? service.color : "var(--color-muted)" }}
+                      >
+                        {service.number}
+                      </span>
+                      <span className="text-lg font-extrabold text-foreground">
+                        {service.title}
+                      </span>
+                    </div>
+
+                    <Icon
+                      className="w-5 h-5 transition-transform duration-300"
+                      style={{ color: isSelected ? service.color : "var(--color-muted)" }}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* RIGHT SPOTLIGHT STAGE */}
+            <div className="lg:col-span-7">
+              {(() => {
+                const target = SERVICES.find((s) => s.id === expandedId) || SERVICES[0];
+                const TargetIcon = iconMap[target.icon] || Monitor;
+
+                return (
+                  <motion.div
+                    key={target.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative rounded-3xl border border-white/20 bg-surface/90 p-8 md:p-12 overflow-hidden shadow-2xl backdrop-blur-2xl"
+                  >
+                    {/* Glowing Corner Aura */}
+                    <div
+                      className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20 pointer-events-none"
+                      style={{ backgroundColor: target.color }}
+                    />
+
+                    <div className="relative z-10 space-y-8">
+                      {/* Top Header */}
+                      <div className="flex items-center justify-between">
+                        <div
+                          className="w-16 h-16 rounded-2xl flex items-center justify-center border bg-black/60 shadow-lg text-white"
+                          style={{ borderColor: `${target.color}60`, color: target.color }}
+                        >
+                          <TargetIcon className="w-8 h-8" />
+                        </div>
+                        <span className="text-4xl font-mono font-black" style={{ color: target.color }}>
+                          {target.number}
+                        </span>
+                      </div>
+
+                      {/* Title & Description */}
+                      <div>
+                        <h3 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mb-3">
+                          {target.title}
+                        </h3>
+                        <p className="text-base text-foreground font-medium leading-relaxed">
+                          {target.description}
+                        </p>
+                      </div>
+
+                      {/* Tech Stack */}
+                      <div className="pt-6 border-t border-border">
+                        <span className="text-xs font-mono font-bold text-accent uppercase tracking-wider block mb-3">
+                          // TECHNOLOGIES & TOOLING
+                        </span>
+                        <div className="flex flex-wrap gap-2">
+                          {target.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-white/10 border border-white/20 text-white shadow-sm"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                    </div>
+                  </motion.div>
+                );
+              })()}
+            </div>
+
+          </div>
+        )}
+
       </div>
     </section>
   );
