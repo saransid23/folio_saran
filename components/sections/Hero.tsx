@@ -188,10 +188,12 @@ export default function Hero() {
         >
           <MagneticButton>
             <a
-              href="#contact"
+              href={PERSONAL.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="magnetic-btn inline-flex items-center gap-2 px-8 py-4 rounded-full bg-foreground text-background font-bold text-sm tracking-wide hover:text-foreground transition-colors duration-500"
             >
-              Get In Touch
+              View Resume
               <ArrowUpRight size={16} />
             </a>
           </MagneticButton>

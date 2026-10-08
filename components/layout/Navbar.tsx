@@ -142,14 +142,12 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick("#contact");
-              }}
+              href={PERSONAL.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-sm font-bold px-5 py-2 rounded-full bg-accent text-foreground hover:bg-accent-dark transition-colors duration-300"
             >
-              Hire Me
+              Resume
               <ArrowUpRight size={14} />
             </a>
           </div>
@@ -202,14 +200,12 @@ export default function Navbar() {
           })}
           <div className="flex items-center gap-4 mt-8">
             <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick("#contact");
-              }}
+              href={PERSONAL.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 text-lg font-bold px-6 py-3 rounded-full bg-accent text-foreground"
             >
-              Hire Me
+              Resume
               <ArrowUpRight size={18} />
             </a>
           </div>
